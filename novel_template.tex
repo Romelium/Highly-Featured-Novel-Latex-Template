@@ -1,0 +1,966 @@
+% !TEX program = lualatex
+% !TEX encoding = UTF-8 Unicode
+\documentclass[11pt, openany]{book} % 11pt for better readability on A5 paper
+
+% --- 0. Document Metadata Variables (Defined First) ---
+% These commands define metadata for the document, used in title page and PDF properties.
+\newcommand{\doctitle}{Fragmented Echoes} % Title of the document
+\newcommand{\docsubtitle}{Glitches in Remembrance} % Subtitle of the document
+\newcommand{\docauthor}{A. Glitch Author} % Author of the document
+\newcommand{\dockeywords}{Memory, Glitch, Fragment, Fragmenta, Distortion, Reality} % Keywords for PDF metadata
+\newcommand{\docsubject}{Novel Exploring Memory Distortion} % Subject for PDF metadata
+\newcommand{\doccopyrightyear}{\the\year{}} % Dynamic copyright year
+
+% --- 1. Essential Packages with Advanced Configuration ---
+% Load essential packages with configurations for enhanced typography and document features.
+% \usepackage{lua-visual-debug} % Uncomment for debugging LuaLaTeX code.
+
+\usepackage[pdfusetitle,hidelinks]{hyperref} % Hyperref for PDF features, load early. pdfusetitle uses document title, hidelinks removes link borders.
+\usepackage{bookmark} % Better PDF bookmarks for navigation, load early after hyperref. Improves PDF navigation sidebar.
+
+\usepackage[T1]{fontenc} % Font encoding for better output. T1 encoding for better glyph coverage.
+\usepackage{geometry} % For page geometry settings. Customize page dimensions and margins.
+\usepackage{fontspec} % For modern font management with system fonts (XeLaTeX/LuaLaTeX). Allows using system fonts easily.
+\usepackage[final,nopatch=footnote]{microtype} % Enable all microtype features in final mode for better typography. Improves justification and spacing.
+\microtypecontext{spacing=nonfrench} % Adjust spacing for non-French typography. Optimizes spacing for English text.
+\SetTracking{encoding={*}, shape=sc}{40} % Improve small caps spacing. Improves readability of small caps.
+\SetExtraKerning{encoding={*}, font=*}{\textendash={120,120}, % Better dash spacing. Improves spacing for dashes.
+\textemdash={120,120}}
+\usepackage{titlesec} % For customizing section titles. Allows for detailed chapter and section formatting.
+\usepackage{fancyhdr} % For custom headers and footers. Creates sophisticated page headers and footers.
+\usepackage{setspace} % For adjusting line spacing. Controls the spacing between lines of text.
+\usepackage{parskip} % For paragraph spacing control. Manages spacing between paragraphs.
+\usepackage[svgnames,x11names,dvipsnames]{xcolor} % Enhanced color options with named colors. Provides a wide range of named colors, here we use grayscale.
+\usepackage[style=american]{csquotes} % American-style quotes. Sets up American quotation style.
+\usepackage{lettrine} % For drop caps. Creates decorative initial letters at the start of paragraphs.
+\usepackage{ragged2e} % For better ragged text alignment. Improves ragged-right and ragged-left text.
+\usepackage{etoolbox} % For more flexible command definition and conditional logic. Provides tools for macro programming and conditionals.
+\usepackage{sectsty} % Additional section formatting control. Offers further control over section headings.
+\usepackage{marginnote} % For margin notes. Allows adding notes in the page margins.
+%\usepackage{fnpct} % Footnote punctuation handling - Commented out as potentially unused
+%\usepackage{wrapfig} % Text wrapping around figures - Commented out as potentially unused
+\usepackage{graphicx} % Support for images. Enables inclusion of graphics.
+\usepackage{tcolorbox} % For boxed text environments. Creates visually distinct boxes for text.
+\tcbuselibrary{skins, theorems}
+\usepackage{epigraph} % Epigraph handling. For typesetting quotations at the beginning of chapters or the document.
+%\usepackage{framed} % For framed text - Commented out as potentially unused
+\usepackage{hyphenat} % Hyphenation control. Fine-tunes hyphenation.
+\usepackage{verse} % For poetry and verse. Provides environment for typesetting poetry.
+\usepackage{titling} % Package needed for proper subtitle handling in standard LaTeX. Ensures correct handling of subtitles in standard LaTeX commands.
+\usepackage{indentfirst} % Indent the first line of paragraphs after headings.
+\usepackage{trimclip} % Required for battle scene formatting
+\usepackage{stackengine} % Required for power level indicators
+\usepackage{progressbar}
+\usepackage{amsmath,amssymb}
+\usepackage{fontawesome5}
+\usepackage{ifthen}
+\usepackage{scalerel}
+\usepackage{tikz} % For cool stuff
+\usetikzlibrary{shapes, calc, positioning}
+\usepackage{amssymb}
+\usepackage{enumitem}
+
+% --- 2. Proper Subtitle Definition and Page Geometry ---
+% Define subtitle command and set up page geometry for A5 paper and custom margins.
+\newcommand{\subtitle}[1]{\gdef\thesubtitle{#1}} % Define a command to set the subtitle, storing it globally. \gdef makes it globally available.
+\newcommand{\thesubtitle}{} % Initialize subtitle to be empty initially. Ensures no subtitle by default.
+
+\geometry{ % Configure page geometry using the geometry package.
+  a5paper, % Set paper size to A5. Common for novels.
+  margin=1.05in, % General margin size.
+  inner=1.05in, % Inner margin for binding. Slightly larger inner margin for book binding.
+  outer=0.95in, % Outer margin. Slightly smaller outer margin for visual balance.
+  top=0.95in, % Top margin.
+  bottom=1.1in, % Bottom margin. Slightly larger bottom margin, common in book design.
+  headheight=15pt, % Height of the header area. Sufficient space for header content.
+  headsep=12pt, % Space between header and text body.
+  footskip=25pt, % Space for the footer.
+  marginparwidth=0.8in, % Margin note width for better readability. Sets width for margin notes.
+  marginparsep=0.15in % Margin separation. Space between main text and margin notes.
+}
+
+% --- 3. Font System ---
+% Define fonts for different text elements using fontspec.
+\setmainfont{TeX Gyre Pagella} % Set main body font. TeX Gyre Pagella is a readable serif font.
+\defaultfontfeatures{RawFeature={+axis={wght=100}}}
+
+\newfontfamily\titlefont[ % Define a font family for titles.
+  Ligatures=TeX, % Enable TeX ligatures for better typography in titles.
+]{TeX Gyre Pagella} % Use TeX Gyre Pagella for titles as well for consistency.
+
+\newfontfamily\headerfont[Scale=0.9]{TeX Gyre Pagella} % Define a smaller font for headers. Scale down Pagella for headers for less prominence.
+
+\newfontfamily\goudyinitialenfont[]{Goudy Initialen} % Define font for drop caps. Goudy Initialen for decorative drop caps.
+\DeclareMicrotypeAlias{Goudy Initialen}{TU-basic} % Ensure microtype features are applied.
+
+\newfontfamily\fleurdelisfont[]{Fleur de Lis} % Define font for Fleur de Lis. Decorative font for ornaments.
+\DeclareMicrotypeAlias{Fleur de Lis}{TU-basic}
+\newfontfamily\graciosaornamentsfont[]{Menina Graciosa Ornaments Two} % Define font for artistical ornaments. Decorative ornament font.
+\DeclareMicrotypeAlias{Menina Graciosa Ornaments Two}{TU-basic}
+\newfontfamily\flowerornamentsfont[]{Flower Ornaments} % Define font for thick flowery ornaments. Decorative floral ornament font.
+\DeclareMicrotypeAlias{Flower Ornaments}{TU-basic}
+
+% Define a new font for sound effects
+\newfontfamily\soundeffectfont[ItalicFont=BaskervilleF-Italic]{BaskervilleF} % Define BaskervilleF for sound effects, italic variant.
+\DeclareMicrotypeAlias{soundeffectfont}{TU-basic}
+
+% Define font families for glitch effects
+\newfontfamily\fragmentfont{Fragment} % Define Fragment font. Semi Unreadable
+\DeclareMicrotypeAlias{Fragment}{TU-basic}
+\newfontfamily\fragmentafont{Fragmenta} % Define Fragmenta font. Sometimes Unreadable
+\DeclareMicrotypeAlias{Fragmenta}{TU-basic}
+\newfontfamily\animotofont{Animoto} % Define Animoto Font. Unreadable
+\DeclareMicrotypeAlias{Animoto}{TU-basic}
+
+% Define font for senses
+\newfontfamily\sightfont{TeX Gyre Heros}
+\newfontfamily\soundfont{TeX Gyre Chorus}
+\newfontfamily\touchfont{TeX Gyre Bonum}
+\newfontfamily\smellfont{Nunito}
+\newfontfamily\tastefont{Comic Sans MS}
+
+\newfontfamily\stampfont{Top Secret Stamp} % Define Top Secret Stamp for stamps
+
+\newfontfamily\hwfont{QT Artiston} % Define QT Artiston handwriting
+
+% Define for fonts with no a lot of flexibily to series and shape. To remove warning
+\newcommand{\textmn}{\fontseries{m}\fontshape{n}}
+
+% --- 4. Fine-tuned Typography ---
+
+% Define chapter ornament *before* chapter styles to ensure it's available
+\newcommand{\chapterornament}[1][2]{% Define command to insert chapter ornaments. Takes optional argument for ornament style.
+  \ifcase#1 % Using \ifcase for cleaner conditional logic, default to 2 if no argument is given. Efficient conditional structure.
+  \or % Case 1: #1 = 1
+  \vspace{0.5\baselineskip}{\centering♢\par} % Using diamond symbol. Simple diamond ornament.
+  \or % Case 2: #1 = 2
+  \vspace{0.5\baselineskip}{\centering\fontseries{m}\selectfont\fleurdelisfont{\symbol{0065}}\par} % Using detailed Fleur-de-lis symbol. Ornate Fleur-de-lis.
+  \or % Case 3: #1 = 3
+  \vspace{0.5\baselineskip}{\centering\graciosaornamentsfont{\symbol{0081}}\par} % Using thin flowery ornament symbol. Delicate floral ornament.
+  \or % Case 4: #1 = 4
+  \vspace{0.5\baselineskip}{\centering\flowerornamentsfont{\symbol{0101}}\par} % Using thick flowery ornament symbol. Bold floral ornament.
+  \else % Default case (including #1 = 0, 5 or any other value > 4, or no argument provided) - No ornament
+  \fi
+}
+
+% Customize typography and define different chapter heading styles.
+\renewcommand{\baselinestretch}{1.25} % Line spacing for novel reading - Unified line spacing setting, removed \linespread. Slightly increased line spacing for readability.
+\setlength{\parindent}{1.2em} % Classical paragraph indent. Standard paragraph indentation.
+\setlength{\parskip}{0pt plus 5pt} % Traditional novel style with no paragraph spacing but a bit of flexibility for no underfill issues. No fixed parskip, but allows slight stretching to avoid underfull lines.
+\hyphenpenalty=700 % Slightly discourages hyphenation. Reduces excessive hyphenation.
+\clubpenalty=9000 % Strongly discourage orphans (lines at the start of a page). Prevents single lines at the start of a page.
+\widowpenalty=9000 % Strongly discourage widows (lines at the end of a page). Prevents single lines at the end of a page.
+\emergencystretch=3em % Help prevent overfull boxes by allowing more stretching. Allows more whitespace stretching to fix overfull lines.
+
+% Chapter style variables
+\newcommand{\chapstyle}{1} % Default chapter style (1-4). Selects default chapter style.
+\newcommand{\chapnameformat}{\normalfont\Large\scshape} % Chapter name format. Formatting for "Chapter" word.
+\newcommand{\chapnumformat}{\normalfont\fontsize{60}{60}\selectfont} % Chapter number format. Formatting for chapter number.
+\newcommand{\chaptitleformat}{\normalfont\Huge\bfseries} % Chapter title format. Formatting for chapter title itself.
+
+% Centralized chapter style command
+\newcommand{\setchapterstyle}[1]{
+  \renewcommand{\chapstyle}{#1}
+}
+
+% Style 1: Elegant centered with ornament (ornament now placed at the end and using titlefont)
+\newcommand{\chapstyleone}{% Define chapter style 1: Centered with ornament.
+  \titleformat{\chapter}[display] % Apply to chapter, using 'display' style for prominent titles.
+  {\titlefont\normalfont\filcenter} % Apply titlefont, center-align.
+  {\chapnumformat\thechapter} % Chapter number formatting.
+  {1em} % Space between number and title.
+  {\chaptitleformat} % Chapter title formatting.
+  [\chapterornament] % Ornament is added here, after the title, default ornament 2. Default chapter ornament.
+  \titlespacing*{\chapter}{0pt}{0pt}{40pt} % Adjust spacing around chapter titles.
+}
+
+% Style 2: Left-aligned modern (titlefont added for consistency)
+\newcommand{\chapstyleTwo}{% Define chapter style 2: Left-aligned modern.
+  \titleformat{\chapter}[display] % 'display' style for chapter titles.
+  {\titlefont\normalfont\raggedright} % Apply titlefont, left-align.
+  {\chapnameformat\chaptertitlename\ \thechapter} % Chapter name and number formatting.
+  {0.5em} % Space between name/number and title.
+  {\chaptitleformat} % Chapter title formatting.
+  [\chapterornament[0]] % No ornament for style 2. No ornament for this style.
+  \titlespacing*{\chapter}{0pt}{30pt}{40pt} % Adjust spacing around chapter titles.
+}
+
+% Style 3: Minimal with thin line (titlefont added for consistency)
+\newcommand{\chapstyleThree}{% Define chapter style 3: Minimal with line.
+  \titleformat{\chapter}[display] % 'display' style for chapter titles.
+  {\titlefont\normalfont\filcenter} % Apply titlefont, center-align.
+  {} % No chapter number prefix.
+  {0pt} % No space before title.
+  {\rule{0.4\textwidth}{0.4pt}\\\vspace{0.5em}\chaptitleformat} % Thin line, vertical space, then title. Creates a horizontal line.
+  [\chapterornament[3]] % Ornament 3 for style 3. Specific ornament for this style.
+  \titlespacing*{\chapter}{0pt}{30pt}{40pt} % Adjust spacing around chapter titles.
+}
+
+% Style 4: Classic with drop chapter number (titlefont added for consistency)
+\newcommand{\chapstyleFour}{% Define chapter style 4: Classic with drop number.
+  \titleformat{\chapter}[block] % 'block' style for chapter titles (number in margin).
+  {\titlefont\normalfont\sffamily\Huge\bfseries\filcenter} % Apply titlefont, sans-serif, center-align.
+  {\thechapter} % Chapter number formatting.
+  {1em} % Space between number and title.
+  {} % No title prefix.
+  [\chapterornament[4]] % Ornament 4 for style 4. Specific ornament for this style.
+  \titlespacing*{\chapter}{0pt}{30pt}{20pt} % Adjust spacing around chapter titles.
+}
+
+% Apply the selected style
+\ifnum\chapstyle=1 % Conditional to apply chapter style 1 if \chapstyle is 1.
+\chapstyleone{}
+\else\ifnum\chapstyle=2 % ... style 2 if \chapstyle is 2.
+\chapstyleTwo{}
+\else\ifnum\chapstyle=3 % ... style 3 if \chapstyle is 3.
+\chapstyleThree{}
+\else\ifnum\chapstyle=4 % ... style 4 if \chapstyle is 4.
+\chapstyleFour{}
+\fi\fi\fi\fi
+
+% --- 5. Customizable Headers and Footers ---
+% Configure headers and footers using fancyhdr package.
+\pagestyle{fancy} % Apply fancy page style for custom headers/footers.
+\fancyhf{} % Clear all header and footer fields. Start with empty header and footer.
+\renewcommand{\headrulewidth}{0.4pt} % Add a thin rule below the header.
+\renewcommand{\footrulewidth}{0pt} % No rule above the footer.
+\fancyhead[LE]{\headerfont\footnotesize\leftmark} % Left Even pages: Chapter name. Chapter name on left even pages.
+\fancyhead[RO]{\headerfont\footnotesize\rightmark} % Right Odd pages: Section name. Section name on right odd pages.
+\fancyfoot[C]{\headerfont\footnotesize\thepage} % Center Footer: Page number. Page number in the center of the footer.
+
+% Create a plain style variant with only page numbers
+\fancypagestyle{plainchapter}{% Define a plain page style for chapters, only page number.
+  \fancyhf{} % Clear header and footer.
+  \renewcommand{\headrulewidth}{0pt} % No header rule.
+  \fancyfoot[C]{\headerfont\footnotesize\thepage} % Page number in center footer.
+}
+
+% --- 6. Advanced Novel Elements ---
+% Define commands for various novel elements like drop caps, scene breaks, dialogue, etc.
+% Drop cap with customizable parameters
+\newcommand{\dropcap}[2][2]{% Define drop cap command. Takes optional argument for number of lines.
+  \lettrine[lines=#1, findent=0.2em, nindent=0em, ante={\phantom{\,}}]{\goudyinitialenfont{#2}}{}% Uses lettrine package for drop caps, Goudy Initialen font.
+}
+
+% Scene separators (multiple options)
+\newcommand{\scenesep}[1][1]{% Define scene separator command. Takes optional argument for separator style.
+  \ifcase#1 % Conditional scene separator selection.
+  \or % Case 1: #1 = 1 (or no argument) - Classic asterisks
+  \scenesepStyleOne{} % Use asterisks style.
+  \or % Case 2: #1 = 2 - Elegant dotted line
+  \scenesepStyleTwo{} % Use dotted line style.
+  \or % Case 3: #1 = 3 - Decorative symbols
+  \scenesepStyleThree{} % Use decorative symbols style.
+  \or % Case 4: #1 = 4 - Flowery Decorative symbol
+  \scenesepStyleFour{} % Use flowery symbol style.
+  \or % Case 5: #1 = 5 - Simple space
+  \scenesepStyleFive{} % Use simple space style.
+  \else % Default case (including #1 = 0 or any other value > 5) - Classic asterisks (style 1)
+  \scenesepStyleOne{} % Default to asterisks if invalid argument.
+  \fi
+}
+
+% Style 1: Classic asterisks
+\newcommand{\scenesepStyleOne}{% Define scene separator style 1: Asterisks.
+  \par\vspace{\baselineskip}% Vertical space before separator.
+  \begin{center}
+    * * * % Asterisks in center.
+  \end{center}
+  \vspace{\baselineskip}\par % Vertical space after separator.
+}
+
+% Style 2: Elegant dotted line
+\newcommand{\scenesepStyleTwo}{% Define scene separator style 2: Dotted line.
+  \par\vspace{\baselineskip}% Vertical space before separator.
+  \begin{center}
+    \makebox[\linewidth]{\dotfill} % Dotted line spanning line width.
+  \end{center}
+  \vspace{\baselineskip}\par % Vertical space after separator.
+}
+
+% Style 3: Decorative symbols
+\newcommand{\scenesepStyleThree}{% Define scene separator style 3: Fleur-de-lis symbols.
+  \par\vspace{\baselineskip}% Vertical space before separator.
+  \begin{center}
+    \fleurdelisfont{\symbol{0115} \symbol{0115} \symbol{0115}} % Fleur-de-lis symbols as separator.
+  \end{center}
+  \vspace{\baselineskip}\par % Vertical space after separator.
+}
+
+% Style 4: Flowery Decorative symbol
+\newcommand{\scenesepStyleFour}{% Define scene separator style 4: Flower ornament.
+  \par\vspace{\baselineskip}% Vertical space before separator.
+  \begin{center}
+    \flowerornamentsfont{\symbol{0101}} % Flower ornament as separator.
+  \end{center}
+  \vspace{\baselineskip}\par % Vertical space after separator.
+}
+
+% Style 5: Simple space
+\newcommand{\scenesepStyleFive}{% Define scene separator style 5: Simple space.
+  \par\vspace{2\baselineskip}\par % Double vertical space as separator.
+}
+
+% Short separator - Improved with dashed rule
+\newcommand{\shortsep}{{\par\medskip\centering{\rule[0.5ex]{0.3\textwidth}{0.4pt}\medskip}\par}} % Improved short separator using a centered rule.
+
+% Dialogue
+\newcommand{\dialogue}[1]{\enquote{#1}} % Dialogue command using csquotes' enquote for quotation marks.
+
+% Character name formatting
+\newcommand{\charname}[1]{\textsc{#1}} % Character name command, small caps.
+
+% Thoughts and internal monologue
+\newcommand{\thought}[1]{\emph{#1}} % Thought command, emphasized (italic).
+
+% Narrative emphasis
+\newcommand{\narrativeemphasis}[1]{{\textit{#1}}} % Narrative emphasis, italic text.
+
+% Epigraph with formatting
+\newcommand{\novelepigraph}[2]{% Define epigraph command. Takes quote and author.
+  \vspace{\baselineskip} % Vertical space before epigraph.
+  \begin{flushright} % Right-align epigraph.
+    \begin{minipage}{0.7\textwidth} % Set width for epigraph block.
+      \itshape #1\par % Italicize quote text.
+      \vspace{0.2cm} % Vertical space between quote and author.
+      \hspace*{\fill}--- \emph{#2} % Author in italics, right-aligned with dash.
+    \end{minipage} % minipage ends here by \end{minipage}
+  \end{flushright}
+  \vspace{1.5\baselineskip}\par % Vertical space after epigraph.
+}
+
+% Letter or document within the narrative (environment for robustness)
+\newenvironment{novelletter}[2][]{% Define novel letter environment. Takes optional sender and recipient.
+  \vspace{0.5\baselineskip} % Vertical space before letter.
+  \begin{center}
+    \rule{0.5\textwidth}{0.4pt} % Rule above letter.
+  \end{center}
+  \vspace{0.5\baselineskip} % Vertical space after rule.
+  \begin{quote} % Use quote environment for letter text.
+    \itshape % Italicize letter text.
+    \ifstrempty{#1}{}{\noindent\textbf{From: #1}\par} % Use \ifstrempty for robust check if argument is empty, if not, print sender in bold. Changed to "From:" for clarity
+    \ifstrempty{#2}{}{\noindent\textbf{Subject: #2}\par} % Same for recipient. Changed to "Subject:" for clarity
+  }{% End of novelletter environment.
+    \vspace{0.5\baselineskip} % Vertical space before rule.
+    \begin{center}
+      \rule{0.5\textwidth}{0.4pt} % Rule below letter.
+    \end{center}
+    \vspace{0.5\baselineskip} % Vertical space after rule.
+  \end{quote}
+}
+
+% Flashback environment with visual distinction
+\newenvironment{flashback}{%
+  \begin{quote}
+    \color{DimGray} % Corrected color name from 'DimGrey' to 'DimGray' (standard color name)
+    \itshape
+}{%
+  \end{quote}
+}
+
+% Poetry environment with verse spacing
+\newenvironment{novelverse}{% Define poetry environment using verse.
+  \begin{verse} % Start verse environment for poetry.
+  }{% End of novelverse environment.
+  \end{verse}
+}
+
+% systemstatus Sequence Formatting (for standard 'book' class)
+\newenvironment{systemstatus}{% Define systemstatus environment.
+  \par\vspace{1em}
+  \noindent\hspace{2em}% Indent from the left
+  \begin{minipage}{\dimexpr\textwidth-4em\relax}% Adjust width for both left and right indent
+    \obeylines
+    \setlength{\parindent}{0pt}
+    \linespread{1.1}\selectfont
+    \ttfamily
+    \footnotesize
+  }{%
+  \end{minipage}
+  \par\vspace{1em}
+}
+
+% Command to select the default glitch font style (1=Fragment, 2=Fragmenta, etc.)
+\newcommand{\defaultglitchfontstyle}{1} % Default glitch font style is Fragment
+
+% Memory Glitch Effect Command - now with optional argument for style
+\newcommand{\memoryglitch}[2][0]{% Optional argument [style number], default is 0 (for default glitch font)
+  \ifcase#1 % Style selection based on the optional argument
+    \or {\color{Black!60}\textmn{\fragmentfont{#2}}} % Style 1: Fragment
+    \or {\color{Black!60}\textmn{\fragmentafont{#2}}} % Style 2: Fragmenta
+    \or {\color{Black!60}\textmn{\animotofont{#2}}} % Style 3: Animoto
+    \else {\color{Black!60}\textmn{\fragmentfont{#2}}} % Default case (or invalid style number), using Fragment as fallback
+  \fi
+}
+
+% Margin note for authorial comments or translations
+\newcommand{\sidenote}[1]{\marginnote{\footnotesize\itshape #1}} % Sidenote command for margin notes, small italic text.
+
+% Chapter ending marker
+\newcommand{\chapterend}{% Define chapter end marker. Centered rule and "END OF CHAPTER".
+  \vspace*{\fill} % Push content to bottom of page.
+  \begin{center}
+    \rule{0.3\textwidth}{0.4pt} % Centered rule.
+    \vspace{0.3cm}\par % Vertical space below rule.
+    \textbf{END OF CHAPTER \thechapter} % "END OF CHAPTER" text, bold.
+  \end{center}
+  \clearpage % Force page break.
+}
+
+% Sound Effects - Grayscale color
+\newcommand{\soundeffect}[2][Gray!175]{{\color{#1}\soundeffectfont\textit{#2}}} % Sound effect command, italicized in custom font and Gray color.
+\newcommand{\sfx}[2][Gray!175]{\soundeffect[#1]{#2}} % Short form sound effect command, Gray color.
+
+% Stronger emphasis commands - Grayscale colors
+\newcommand{\emphstrong}[1]{{\textbf{#1}}} % Simple bold emphasis.
+\newcommand{\emphstrongcolored}[1]{{\textbf{\color{DarkSlateGray}#1}}} % Bold emphasis with DarkSlateGray color.
+\newcommand{\emphstrongfont}[1]{{\textbf{\textsf{#1}}}} % Bold emphasis with sans-serif font.
+
+% Command for internal state description
+\newcommand{\internalstate}[1]{{\textit{\textrm{\footnotesize #1}}}} % Internal state, italic, small, roman font.
+\newcommand{\internalstateSC}[1]{{\textit{\textsc{#1}}}} % Internal state, italic, small caps.
+
+% Minor scene break commands
+\newcommand{\minorscenebreak}{{\par\vspace{0.5\baselineskip}\centering{\textellipsis\par\vspace{0.5\baselineskip}}}} % Minor scene break with ellipsis.
+\newcommand{\minorscenebreakline}{{\par\vspace{0.5\baselineskip}\centering{\rule{0.1\textwidth}{0.4pt}\par\vspace{0.5\baselineskip}}}} % Minor scene break with short line.
+
+% Keyword highlighting command - Grayscale color
+\newcommand{\keyword}[1]{{\textbf{\color{DarkSlateGray}#1}}} % Keyword highlighting in bold and DarkSlateGray color.
+\newcommand{\keywordfont}[1]{{\textbf{\sffamily #1}}} % Keyword highlighting in bold and sans-serif font.
+
+\newcommand{\battleline}[2]{%
+  \par\noindent%
+  \begin{minipage}[t]{0.47\textwidth}
+    \raggedright#1
+  \end{minipage}%
+  \hfill%
+  \clipbox{0pt 0pt 0pt 0pt}{\rule{0.06\textwidth}{0.4pt}}%
+  \hfill%
+  \begin{minipage}[t]{0.47\textwidth}
+    \raggedleft#2
+  \end{minipage}\par
+}
+
+% Power Level Indicators
+\newcommand{\powerlevel}[2][Gray]{% #1: Fill Color (optional, default Gray), #2: Percentage (numerical value, e.g., 0.25, not "25%")
+  \progressbar[
+    heightr=0.6,          % Relative height of the bar (fraction of text height)
+    width=2.5em,           % Width of the bar
+    filledcolor=#1,         % Fill color (corrected key: filledcolor)
+    emptycolor=Black!10,   % Empty bar color
+    roundnessr=0.2,        % Optional: Rounded corners
+    subdivisions=5         % Optional: Ticks within the bar
+  ]{#2} % Display percentage inside - keep this, text color might be default white or handled differently
+}
+
+% Enhanced Sensory Descriptions (Contextual Emphasis & Sense Fonts)
+\newcommand{\currentsensefont}{\normalfont}
+\newcommand{\sensory}[3][subtle]{% [level], sense, description
+  \ifthenelse{\equal{#2}{sight}}{% SIGHT SENSE
+    \renewcommand{\currentsensefont}{\sightfont}% Set font for SIGHT
+  }{% Else if not sight, check for sound
+    \ifthenelse{\equal{#2}{sound}}{% SOUND SENSE
+      \renewcommand{\currentsensefont}{\fontshape{n}\soundfont}% Set font for SOUND
+    }{% Else if not sound, check for touch
+      \ifthenelse{\equal{#2}{touch}}{% TOUCH SENSE
+        \renewcommand{\currentsensefont}{\touchfont}% Set font for TOUCH
+      }{% Else if not touch, check for smell
+        \ifthenelse{\equal{#2}{smell}}{% SMELL SENSE
+          \renewcommand{\currentsensefont}{\smellfont}% Set font for SMELL
+        }{% Else if not smell, assume taste (or default font if unknown)
+          \ifthenelse{\equal{#2}{taste}}{% TASTE SENSE
+            \renewcommand{\currentsensefont}{\tastefont}% Set font for TASTE
+          }{% DEFAULT SENSE (if sense keyword is invalid)
+            \renewcommand{\currentsensefont}{\normalfont}% Default to normal font
+          }%
+        }%
+      }%
+    }%
+  }%
+  % Apply emphasis level
+  \ifthenelse{\equal{#1}{subtle}}{% Subtle level: Italics and sense font
+    {\textit{\currentsensefont{#3}}}
+  }{%
+    \ifthenelse{\equal{#1}{moderate}}{% Moderate level: Italics with color
+      {\textit{\textcolor{DarkSlateGray}{\currentsensefont{#3}}}}
+    }{%
+      \ifthenelse{\equal{#1}{strong}}{% Strong level: Bold italics with color
+        {\textbf{\textit{\textcolor{DarkSlateGray}{\currentsensefont{#3}}}}}
+      }{% Default to subtle if level is invalid
+        {\textit{\currentsensefont{#3}}}%
+      }%
+    }%
+  }%
+}
+
+% Glitch Marker
+\newcommand{\glitchspace}{%
+  \hspace{0.1em}%
+  \raisebox{0.5ex}{\tiny\ensuremath{\times}}%
+  \hspace{0.1em}%
+}
+
+% Helper commands for content formatting (shared across styles)
+\newcommand{\characternameentry}[1]{\centering\Large\scshape\charname{#1}\par} % For character name inside entry
+\newcommand{\charactertaglineentry}[1]{\centering\small\itshape #1\par\vspace{0.5em}} % For tagline or epithet
+\newcommand{\characterattributeentry}[1]{\footnotesize\raggedright\textit{-- #1}\par} % For character attributes
+
+% --- Character Entry Styles ---
+% Centralized character entry command with style argument
+\newcommand{\characterentry}[2][classical]{% #1: style, #2: content
+  \ifstrequal{#1}{classical}{%
+    \begin{classicalcharacterentry}{#2}\end{classicalcharacterentry}
+  }{%
+    \ifstrequal{#1}{modern}{%
+      \begin{moderncharacterentry}{#2}\end{moderncharacterentry}
+    }{%
+      \ifstrequal{#1}{minimal}{%
+        \begin{minimalcharacterentry}{#2}\end{minimalcharacterentry}
+      }{% default to classical
+        \begin{classicalcharacterentry}{#2}\end{classicalcharacterentry}
+      }%
+    }%
+  }%
+}
+
+% 1. Classical Character Entry Style
+\newenvironment{classicalcharacterentry}[1][Character Profile]{% Optional argument for title
+  \begin{tcolorbox}[
+      colback=white, % White background
+      boxrule=0pt,
+      toprule=0.8pt, % Slightly thicker top and bottom rules
+      bottomrule=0.8pt,
+      leftrule=0pt,
+      rightrule=0pt,
+      title={\titlefont\bfseries\footnotesize\textbf{\textit{#1}}}, % Italic title for classical minimal
+      before title={{\centering{\graciosaornamentsfont\Huge{\fontseries{m}\fontshape{n}\symbol{"0048}}}\par\vspace{0.2em}}}, % Ornament above title
+      after title*={\par\vspace{0.1em}\hrulefill\par\vspace{0.3em}}, % Rule under title
+      before upper={}
+    ]
+  }{%
+    \par\vspace{0.3em}\hrulefill\par % Rule below content
+  \end{tcolorbox}
+}
+
+% 2. Modern Character Entry Style
+\newenvironment{moderncharacterentry}[1][Character Profile]{% Optional argument for title
+  \begin{tcolorbox}[
+      colback=WhiteSmoke, % Light gray background for modern
+      colframe=DarkSlateGray, % Dark gray frame
+      arc=0mm, % Sharp corners
+      outer arc=0mm,
+      boxrule=0.6pt,
+      title=\textbf{\sffamily #1}, % Sans-serif title for modern
+      fonttitle=\sffamily\bfseries\footnotesize,
+      before upper={}
+    ]
+  }{%
+  \end{tcolorbox}
+}
+
+% 3. Minimal Character Entry Style
+\newenvironment{minimalcharacterentry}{% No title
+  \begin{tcolorbox}[
+      colback=white, % White background
+      colframe=white, % No frame
+      boxrule=0pt,
+      toprule=0.4pt, % Only top and bottom rules
+      bottomrule=0.4pt,
+      leftrule=0pt,
+      rightrule=0pt,
+      before upper={}
+    ]
+  }{%
+  \end{tcolorbox}
+}
+
+% Used for damage indicators or document style stamp
+\newcommand{\stamp}[3][DarkRed]{%
+  \tikz[overlay, baseline=-0.7ex] \node[rotate=15, inner sep=0, text=#1] {%
+    \scalebox{1.2}[1.4]{\textmn\stampfont{\small#2}}%
+    \raisebox{0.3ex}{\textmn\stampfont{\scriptsize#3}}%
+  };%
+}
+
+\newcommand{\dangericon}{\textcolor{Red}{\faIcon{exclamation-triangle}}}
+\newcommand{\weaknessicon}{\textcolor{Orange}{\faIcon{crosshairs}}}
+\newcommand{\behavioricon}{\textcolor{ForestGreen}{\faIcon{shoe-prints}}}
+
+% --- Bestiary Styles ---
+% 1. Classical Bestiary Style (Original)
+\newenvironment{classicalbestiary}[1]{%
+  \begin{tcolorbox}[
+      enhanced,
+      colback=white,
+      arc=3mm,
+      boxrule=0pt,
+      toprule=0.8pt, % Slightly thicker top and bottom rules
+      bottomrule=0.8pt,
+      leftrule=0pt,
+      rightrule=0pt,
+      title={\tikz{\node[text=DarkSlateGray, font=\bfseries\scshape] {#1};}},
+      title style={
+        draw=DarkSlateGray,
+        line width=0.5pt,
+        fill=Black,
+        rounded corners=2mm,
+        font=\bfseries\scshape
+      },
+      underlay boxed title={
+        \path[draw=DarkSlateGray, line width=0.4pt, dash pattern=on 2pt off 1pt]
+        (title.south west) -- (title.south east);
+      },
+      before upper={\raggedright},
+      fontupper=\small,
+      separator sign={\,\,\,\,},
+      title={{\titlefont\bfseries\footnotesize\textbf{\textit{#1}}}}, % Italic title for classical minimal
+      before title={{\centering{\graciosaornamentsfont\Huge{\fontseries{m}\fontshape{n}\symbol{"0050}}}\par\vspace{0.2em}}}, % Ornament above title
+      after title*={\par\vspace{0.1em}\hrulefill\par\vspace{0.3em}}, % Rule under title
+    ]
+    \vspace{2pt}
+  }{%
+  \end{tcolorbox}
+}
+
+% 2. Modern Bestiary Style
+\newenvironment{modernbestiary}[1]{%
+  \begin{tcolorbox}[
+      enhanced,
+      colback=WhiteSmoke,
+      colframe=DarkSlateGray,
+      arc=0mm,
+      outer arc=0mm,
+      boxrule=0.6pt,
+      title={\textbf{\sffamily #1}},
+      fonttitle=\sffamily\bfseries\footnotesize,
+      before upper={\raggedright},
+      fontupper=\small,
+      separator sign={\,\,\,\,},
+    ]
+    \vspace{2pt}
+  }{%
+  \end{tcolorbox}
+}
+
+% 3. Minimal Bestiary Style
+\newenvironment{minimalbestiary}[1]{%
+  \begin{tcolorbox}[
+      colback=white,
+      colframe=white,
+      boxrule=0pt,
+      toprule=0.4pt,
+      bottomrule=0.4pt,
+      leftrule=0pt,
+      rightrule=0pt,
+      title={\textbf{\textit{#1}}},
+      fonttitle=\bfseries\footnotesize,
+      before upper={\raggedright},
+      fontupper=\small,
+      separator sign={\,\,\,\,},
+    ]
+    \vspace{2pt}
+  }{%
+  \end{tcolorbox}
+}
+
+
+\newcommand{\bestiaryentry}[2]{%
+  {\makebox[1.2em][c]{%  <- Enforce width of 1.2em, centered content
+      #1%
+  }}%
+  \hspace{0.3em}%
+  {#2}\par
+}
+
+% --- 7. Document Parts ---
+% Title page creator with multiple styles
+\makeatletter % Enable access to @ commands for title page definitions.
+
+% Centralized title page command
+\newcommand{\maketitlepage}[1][one]{% #1: style
+  \ifstrequal{#1}{one}{%
+    \titlepageOne{}
+  }{%
+    \ifstrequal{#1}{two}{%
+      \titlepageTwo{}
+    }{%
+      \ifstrequal{#1}{three}{%
+        \titlepageThree{}
+      }{% default to style one
+        \titlepageOne{}
+      }%
+    }%
+  }%
+}
+\renewcommand{\maketitle}{\maketitlepage} % redefine \maketitle to use the centralized command
+
+
+\newcommand{\titlepageOne}[1][]{% Define title page style 1: Centered classic.
+  \begin{titlepage} % Start titlepage environment.
+    \centering % Center-align content on title page.
+    \vspace*{0.2\textheight} % Vertical space from top.
+    \rule{0.4\textwidth}{1pt} % Top horizontal rule.
+    \vspace{0.5cm} % Vertical space.
+
+    {\fontsize{30pt}{36pt}\selectfont\bfseries\titlefont\@title\par} % Main title, large font, bold, title font.
+
+    \ifstrempty{\thesubtitle}{}{ % Check if subtitle is defined.
+      \vspace{0.5cm} % Vertical space if subtitle exists.
+      {\fontsize{18pt}{22pt}\selectfont\itshape\titlefont\thesubtitle\par} % Subtitle, smaller font, italic, title font.
+    }
+
+    \vspace{0.5cm} % Vertical space.
+    \rule{0.4\textwidth}{1pt} % Bottom horizontal rule.
+
+    \vfill % Fill vertical space to push author to bottom.
+
+    {\large\itshape by\/} % "by" text, large italic.
+    \vspace{0.5cm} % Vertical space.
+
+    {\Large\bfseries\itshape \@author\/} % Author name, large bold italic.
+
+    \vspace*{0.1\textheight} % Vertical space from bottom.
+  \end{titlepage}
+}
+
+\newcommand{\titlepageTwo}[1][]{% Define title page style 2: Right-aligned modern.
+  \begin{titlepage} % Start titlepage environment.
+    \null\vspace{0.1\textheight} % Null box for vertical spacing from top.
+    \begin{flushright} % Right-align content.
+      {\fontsize{36pt}{40pt}\selectfont\bfseries\titlefont\@title\par} % Main title, larger font, bold, title font.
+
+      \ifstrempty{\thesubtitle}{}{ % Check if subtitle is defined.
+        \vspace{0.3cm} % Vertical space if subtitle exists.
+        {\fontsize{18pt}{22pt}\selectfont\titlefont\thesubtitle\par} % Subtitle, smaller font, title font.
+      }
+
+      \vspace{0.4\textheight} % Vertical space.
+
+      {\Large\@author} % Author name, large font.
+    \end{flushright}
+  \end{titlepage}
+}
+
+\newcommand{\titlepageThree}[1][]{% Define title page style 3: Minimal centered.
+  \begin{titlepage} % Start titlepage environment.
+    \centering % Center-align content.
+    \null\vspace{0.25\textheight} % Null box for vertical spacing from top.
+    {\fontsize{24pt}{30pt}\selectfont\titlefont\@title\par} % Main title, medium font, title font.
+
+    \ifstrempty{\thesubtitle}{}{ % Check if subtitle is defined.
+      \vspace{0.5cm} % Vertical space if subtitle exists.
+      {\fontsize{16pt}{20pt}\selectfont\itshape\titlefont\thesubtitle\par} % Subtitle, smaller font, italic, title font.
+    }
+
+    \vfill % Fill vertical space.
+
+    {\@author} % Author name.
+
+    \vspace{0.05\textheight} % Vertical space from bottom.
+  \end{titlepage}
+}
+
+\makeatother % Restore @ protection for commands.
+
+% --- 8. PDF Metadata ---
+% Set PDF metadata for document properties.
+\hypersetup{ % Configure PDF metadata using hyperref.
+  pdftitle={\doctitle}, % Title from \doctitle command.
+  pdfauthor={\docauthor}, % Author from \docauthor command.
+  pdfsubject={\docsubject}, % Subject from \docsubject command.
+  pdfkeywords={\dockeywords}, % Keywords from \dockeywords command.
+  pdfcreator={LaTeX with LuaLaTeX and custom class}, % Add creator info.
+  pdfproducer={LuaLaTeX}, % Add producer info.
+}
+
+% --- 9. Document Start ---
+\begin{document} % Start of the document body.
+
+% Use the defined commands for title, subtitle, and author
+\title{\doctitle} % Set document title using \doctitle command.
+\subtitle{\docsubtitle} % Set document subtitle using \subtitle command.
+\author{\docauthor} % Set document author using \docauthor command.
+
+\frontmatter % Start front matter section (title page, dedication, etc.).
+\maketitlepage[one] % Generate the title page - using style 'one' (Classic).
+
+\thispagestyle{empty} % Remove header and footer from this page.
+\vspace*{0.3\textheight} % Vertical space from top.
+\begin{center}
+  \emphstrongcolored{In shades of gray, stories unfold.} % Dedication text, strong emphasis, dark gray color.
+\end{center}
+
+\thispagestyle{empty} % Remove header and footer from this page.
+\vspace*{0.3\textheight} % Vertical space from top.
+\novelepigraph{The ink is gray, but the tale is vivid.}{An Old Scribe} % Epigraph using \novelepigraph command.
+
+\mainmatter % Start main matter section (chapters).
+\chapter{Echoes of Yesterday} % Chapter title using default style 1.
+
+\dropcap[3]{E}liza blinked, the sterile white of the room \narrativeemphasis{assaulting} her eyes.  \sidenote{Blank memory slate?} Where...?  A dull ache pulsed behind her temples, a rhythm echoing the faint \sfx{hum of the machines} surrounding her.  She tried to sit up, but her limbs felt heavy, disconnected. \internalstate{Something is wrong.} \sidenote{Internal state: Initial disorientation}
+
+A nurse, her face a blur of gentle concern, materialized beside the bed. \dialogue{Easy now,} she said, her voice soft, \dialogue{you've been asleep for a while.}  \thought{Asleep?} \charname{Eliza} questioned internally, \thought{It felt like more than sleep.} Like a vast emptiness, where \memoryglitch{memories} should be.
+
+\scenesep[2] % Elegant dotted line scene separator
+
+\battleline{\charname{Eliza} raised her silver blade}{The alpha \emph{snarled}, claws gleaming}
+
+\dialogue{Where am I?} \charname{Eliza} managed, her voice raspy and unfamiliar even to herself. \stamp{The horrors will come}
+
+\dialogue{You're in the \keywordfont{recovery ward},} the nurse replied, adjusting a tube connected to \charname{Eliza}'s arm.  \dialogue{After the...} she paused, choosing her words carefully, \dialogue{\keyword{incident}.}  The incident.  The word hung in the air, devoid of meaning. \keyword{Incident}.  W\memoryglitch[2]{hat incident}? \sidenote{Memory Glitch Style 2}
+
+\minorscenebreakline % Minor scene break with short line
+
+\begin{flashback} % Memory environment
+  A flash of \memoryglitch[3]{blue light}. \sfx[DarkGray]{Screams, distant and distorted.} The \sensory[moderate]{smell}{metallic tang of ozone} filled her non-existent nostrils. Then, nothing. Just a gaping void where understanding should reside. R\memoryglitch[1]{un}! a voice, not hers, screamed in the echoing darkness. The \glitchspace university \glitchspace burned in her mind's eye, a fractured image.
+\end{flashback}
+
+\shortsep % Improved short separator - dashed rule
+
+\sensory[strong]{sight}{\textcolor{Red}{Blinding red light}}
+
+She looked at her hands, pale and thin, unfamiliar.  \thought{Were these really hers?} She tried to flex her fingers, a slow, deliberate movement. Each joint creaked like rusted hinges. \internalstateSC{Disconnected.  Fragmented.} \marginnote{\footnotesize \textit{Internal state: Disconnection in Small Caps}}
+\sensory[moderate]{touch}{Cool and strangely smooth} The sheets beneath her fingers felt unfamiliar.
+
+Suddenly, a surge of energy coursed through her veins.
+\begin{systemstatus}
+  SYSTEM\_CHECK: INITIATING
+  CORE\_TEMP: 37.2C (NORMAL)
+  BLOOD\_OXYGEN: 98\% (OPTIMAL)
+  MUSCLE\_DENSITY: 45\% (LOW)
+  NEURAL\_NET: SYNCHRONIZING...
+  EXTERNAL\_SENSORS: OFFLINE
+  RECALIBRATING...
+  EXTERNAL\_SENSORS: ONLINE (PARTIAL)
+  VISUAL\_INPUT: NOMINAL
+  AUDITORY\_INPUT: MINIMAL
+  TACTILE\_INPUT: RESTRICTED
+  POWER\_RESERVES: 12\% (CRITICAL)
+  RECHARGING...
+  POWER\_RESERVES: 30\% (SUFFICIENT)
+  SYSTEM\_CHECK: COMPLETE
+  STATUS: STABLE - AWAKENING PROTOCOL - ACTIVE
+\end{systemstatus}
+
+She felt a tingling sensation in her fingertips, and a faint hum resonated around her. \narrativeemphasis{Power awakening.} \powerlevel{0.15} The feeling of 15\%? % Default Gray bar, 15% filled
+
+\narrativeemphasis{Charging up!} \powerlevel[DodgerBlue]{0.75} % DodgerBlue bar, 75% filled
+
+Full power! \powerlevel[Goldenrod]{1} % Goldenrod bar, 100% filled
+\sensory[moderate]{sound}{A low thrumming, like distant machinery} TThe hum intensified, resonating in her chest.
+
+\scenesep[4] % Flowery Decorative symbol scene separator
+
+A crisp white envelope lay on the bedside table. \charname{Eliza} reached for it, her fingers clumsy. Inside, a single sheet of paper, folded neatly.
+\sensory[moderate]{sight}{Stark white against the muted room} TThe envelope stood out against the pale surroundings.
+
+\begin{novelletter}[Aris Thorne]{Eliza R- Patient Assessment} % Novel letter environment with sender and recipient
+  To the Attending Physician,
+
+  Please find attached the preliminary assessment for Patient \charname{Eliza} R-. Initial examination on awakening indicates \emphstrong{retrograde amnesia}. Memory recall is significantly impaired, particularly regarding events immediately preceding admission. T\memoryglitch[1]{races} of psychological \emphstrong{trauma} are evident, though the etiology remains unclear. Further neurological and psychological evaluations are scheduled. The \glitchspace recovery \glitchspace ward seems stable for now.
+
+  Sincerely,
+
+  Dr. Aris Thorne, Neurology Resident
+\end{novelletter}
+
+\scenesep[1] % Classic asterisks scene separator
+
+\dialogue{\keyword{incident}... \emphstrong{trauma}... \emphstrong{amnesia}...} \charname{Eliza} whispered, the words bouncing off the walls of her confusion.  \keywordfont{Gaps} in her mind, like holes torn in fabric, stared back at her.
+
+\minorscenebreak % Minor scene break with ellipsis
+
+A wave of dizziness washed over her. She closed her eyes, and fragmented images flickered behind her eyelids – distorted faces, flashes of light, the overwhelming scent of ozone.  She felt adrift, unmoored from her own past.
+\sensory[subtle]{smell}{Pungent mix of antiseptic and something metallic} The air in the \glitchspace recovery \glitchspace ward had a distinct odor.
+\sensory[subtle]{taste}{Faintly metallic, like old blood} A lingering aftertaste coated her tongue.
+
+\begin{novelverse} % Novel verse environment for poetry
+  A whisper of what was, a shadow of what might be,
+  In fragments of memory, a lost identity.
+  Glitches in the system, a fractured reality,
+  Echoes in the silence, of a forgotten entity.
+\end{novelverse}
+
+\scenesep[3] % Decorative symbols scene separator
+
+The nurse returned with a glass of water. She offered a practiced, reassuring smile. \dialogue{Don't worry, \charname{Eliza}, it's all going to be alright.} She paused, her smile unwavering. \dialogue{We're here to help you \emphstrongfont{remember}.}
+
+\charname{Eliza} took the water, her hand trembling slightly. \thought{Remember?} But what was there to remember? Just \memoryglitch[2]{static} and \memoryglitch{voids}. A \emphstrongcolored{broken mirror} reflecting a \emphstrongcolored{shattered past}. \sidenote{The broken mirror metaphor emphasizes the fragmented self.}
+\sensory[strong]{sight}{Tears blurred her vision}{DarkSlateGray} The edges of the room wavered.
+
+\chapterend{} % Chapter end marker
+
+% --- 10. Back Matter ---
+\backmatter % Start back matter section (entries, epilogue, appendix, etc.).
+
+\section*{Character Entries} % Added a section to showcase character entries
+
+\subsection*{Classical Style}
+\characterentry[classical]{ % Classical Character Entry using centralized command
+  \characternameentry{Eliza R-}
+  \charactertaglineentry{Echoes of a Forgotten Past}
+  \characterattributeentry{Amnesiac with latent abilities}
+  \characterattributeentry{Seeking identity and lost memories}
+}
+
+\subsection*{Modern Style}
+\characterentry[modern]{ % Modern Character Entry using centralized command
+  \characternameentry{Dr. Aris Thorne}
+  \charactertaglineentry{Dedicated to Patient Recovery}
+  \characterattributeentry{Assigned to the Eliza R- case}
+  \characterattributeentry{Methodical and detail-oriented}
+}
+
+\subsection*{Minimal Style}
+\characterentry[minimal]{ % Minimal Character Entry using centralized command
+  \characternameentry{Nurse Anya}
+  \charactertaglineentry{Guardian of the Ward}
+  \characterattributeentry{Compassionate and reassuring}
+  \characterattributeentry{Provides initial care for Eliza}
+}
+
+\begin{classicalbestiary}{Alpha Werewolf}
+  \small\itshape
+  \bestiaryentry{\dangericon}{Threat Level:
+  \textcolor{red}{\progressbar[heightr=0.7, width=1.5cm, filledcolor=red, emptycolor=black!10]{0.8}}\stamp[DarkRed]{Class A}{Predator}}
+  \bestiaryentry{\weaknessicon}{Weaknesses:
+  \textcolor{orange}{\faIcon{fire}\vspace{2pt}Fire}, \textcolor{Silver}{\faIcon{coins}\vspace{2pt}Silver}, \textcolor{ForestGreen}{\faIcon{leaf}\vspace{2pt}Wolfsbane}}
+  \bestiaryentry{\behavioricon}{Behavior Patterns: Hunts during full moon cycles}
+  \vspace{3pt}
+  \hfill\scriptsize\textcolor{DarkSlateGray}{\faIcon{paw} Lycanthrope Species}
+\end{classicalbestiary}
+
+\subsection*{Modern Bestiary}
+\begin{modernbestiary}{Cybernetic Hound}
+  \small\itshape
+  \bestiaryentry{\dangericon}{Threat Level:
+  \textcolor{red}{\progressbar[heightr=0.7, width=1.5cm, filledcolor=red, emptycolor=black!10]{0.6}}\stamp[DarkRed]{Mark II}{Aggressor}}
+  \bestiaryentry{\weaknessicon}{Weaknesses:
+  \textcolor{orange}{\faIcon{bolt}\vspace{2pt}EMP}, \textcolor{Silver}{\faIcon{circle}\vspace{2pt}Shielding}, \textcolor{ForestGreen}{\faIcon{code}\vspace{2pt}Hacking}}
+  \bestiaryentry{\behavioricon}{Behavior Patterns: Patrols designated sectors}
+  \vspace{3pt}
+  \hfill\scriptsize\textcolor{DarkSlateGray}{\faIcon{robot} Robotic Unit}
+\end{modernbestiary}
+
+\subsection*{Minimal Bestiary}
+\begin{minimalbestiary}{Shadow Entity}
+  \small\itshape
+  \bestiaryentry{\dangericon}{Threat Level:
+  \textcolor{red}{\progressbar[heightr=0.7, width=1.5cm, filledcolor=red, emptycolor=black!10]{0.9}}\stamp[DarkRed]{Class S}{Nightmare}}
+  \bestiaryentry{\weaknessicon}{Weaknesses:
+  \textcolor{orange}{\faIcon{sun}\vspace{2pt}Light}, \textcolor{Silver}{\faIcon{magic}\vspace{2pt}Arcane}, \textcolor{ForestGreen}{\faIcon{heart}\vspace{2pt}Pure Intent}}
+  \bestiaryentry{\behavioricon}{Behavior Patterns: Manifests in deep shadows}
+  \vspace{3pt}
+  \hfill\scriptsize\textcolor{DarkSlateGray}{\faIcon{ghost} Ethereal Being}
+\end{minimalbestiary}
+
+\chapter{Epilogue in Gray} % Epilogue chapter title.
+\thispagestyle{empty} % Plain page style for epilogue.
+\begin{center}
+  \vspace*{\fill} % Fill vertical space.
+  The tale concludes, for now,\\
+  but shadows always linger...
+  \vspace*{\fill} % Fill vertical space.
+\end{center}
+
+\end{document}
